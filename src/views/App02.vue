@@ -1,23 +1,75 @@
-<script setup lang="ts">
+<template>
+  <!-- ✅ 关键修改 1：加上 v-if="news.title" -->
+  <!-- 意思是：只有当 news 里面有 title 的时候，才允许显示下面的内容 -->
+  <main v-if="news.title">
+    <div style="text-align: center">
+      <p class="title">{{ news.title }}</p>
+    </div>
 
-import BaseLayout from "@/views/BaseLayout.vue";
+    <br />
+
+    <!-- 如果是 HTML 内容 -->
+    <div  class="news-content" v-html="news.content"></div>
+  </main>
+
+  <!-- ✅ 关键修改 2：加个 loading 提示 -->
+  <!-- 意思是：如果还没拿到数据，就在页面中间显示“加载中...” -->
+  <div v-else>
+    加载中...
+  </div>
+</template>
+<script setup lang="ts">
+import { onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
+import { getNewsById } from '@/http/news';
+
+const route = useRoute();
+const news = ref<{ title?: string; content?: string }>({});
+
+onMounted(async () => {
+  const id = Number(route.query.id);
+  if (!id) return;
+
+  try {
+    const res = await getNewsById(id);
+    // ✅ 关键点：后端直接返回 News 对象，不需要 .data
+    news.value = res; // 如果 axios 拦截器没包装
+    // 或者：news.value = res; // 如果 axios 直接返回响应体
+
+    console.log("新闻详情原始数据:", res);
+    console.log("赋值后的 news:", news.value);
+  } catch (error) {
+    console.error("获取新闻详情失败", error);
+  }
+});
 </script>
 
-<template>
-    <main>
-      <div style="text-align: center;"><p class="title">数学与计算科学学院召开实践教学工作会议</p>
-        <br>
-      <p class="title2">作者： 时间：2026-04-02 点击数：83</p></div>
-      <br>
-      <p>4月1日，数学与计算科学学院在花江慧谷4#414会议室召开了实践教学工作会议。学院分管实践教学副院长李郴良、各系部负责人、教学秘书参加会议。</p>
-       <p> 会上，李郴良通报了学院“产教融合、科教融汇”工作的推进情况及现存问题，并就各系部实习基地的后续建设规划、大学生创新能力培养等工作进行了部署。</p>
-       <p> 与会人员围绕2026届本科毕业设计（论文）中期检查情况、指导教师指导情况、毕设后期工作安排等问题进行了深入讨论，研究并提出了切实可行的改进措施。</p>
-      <img id="guet3" src="@/assets/3.png" alt="图片">
-    </main>
-
-</template>
-
 <style scoped>
+
+.news-content ::v-deep img {
+  max-width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 12px auto;
+}
+
+/* ✅ 核心修复代码 */
+/* 使用 /deep/ 或 ::v-deep 是为了让样式穿透 scoped 的限制，影响到 v-html 生成的图片 */
+.content-box /deep/ img {
+  max-width: 100% !important; /* 关键：限制图片最大宽度为父容器宽度 */
+  height: auto !important;     /* 关键：高度自动等比例缩放 */
+  display: block;              /* 可选：去除图片底部的空白间隙 */
+  margin: 10px 0;              /* 可选：给图片上下加点间距，好看点 */
+}
+
+/* 顺便给段落加点样式，防止文字贴边 */
+.content-box /deep/ p {
+  line-height: 1.8;
+  color: #333;
+  font-size: 16px;
+}
+
+
 *{
   margin: 0;
   padding: 0;

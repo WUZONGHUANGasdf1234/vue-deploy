@@ -7,13 +7,7 @@ export interface newsData {
 
 }
 
-export const saveNews=(data:newsData)=>{
-    return axios({
-        url:'/api/news/saveNews',
-        method:'POST',
-        data
-    })
-}
+
 
 
 export const newsList = (start:number,rows:number)=>{
@@ -25,3 +19,12 @@ export const newsList = (start:number,rows:number)=>{
             rows}
     })
 }
+
+// src/http/news.ts
+export const getNewsById = (id: number) => {
+    return axios({
+        url: '/api/news/getNewsById',
+        method: 'GET',
+        params: { id }
+    });
+};
