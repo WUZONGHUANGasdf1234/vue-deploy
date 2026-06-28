@@ -1,5 +1,4 @@
 <template>
-  <!-- ✅ 关键修改 1：加上 v-if="news.title" -->
   <!-- 意思是：只有当 news 里面有 title 的时候，才允许显示下面的内容 -->
   <main v-if="news.title">
     <div style="text-align: center">
@@ -10,9 +9,13 @@
 
     <!-- 如果是 HTML 内容 -->
     <div  class="news-content" v-html="news.content"></div>
+
+    <div class="ceshi">
+      <h1>测试部署</h1>
+    </div>
   </main>
 
-  <!-- ✅ 关键修改 2：加个 loading 提示 -->
+
   <!-- 意思是：如果还没拿到数据，就在页面中间显示“加载中...” -->
   <div v-else>
     加载中...
@@ -45,6 +48,10 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+
+.ceshi{
+  background-color: pink;
+}
 
 .news-content ::v-deep img {
   max-width: 100% !important;
