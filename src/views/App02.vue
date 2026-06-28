@@ -13,6 +13,9 @@
     <div class="ceshi">
       <h1>测试部署</h1>
     </div>
+    <div class="ceshi2">
+      <h1>测试部署</h1>
+    </div>
   </main>
 
 
@@ -35,7 +38,6 @@ onMounted(async () => {
 
   try {
     const res = await getNewsById(id);
-    // ✅ 关键点：后端直接返回 News 对象，不需要 .data
     news.value = res; // 如果 axios 拦截器没包装
     // 或者：news.value = res; // 如果 axios 直接返回响应体
 
@@ -52,6 +54,9 @@ onMounted(async () => {
 .ceshi{
   background-color: pink;
 }
+.ceshi2{
+  background-color: red;
+}
 
 .news-content ::v-deep img {
   max-width: 100% !important;
@@ -60,7 +65,6 @@ onMounted(async () => {
   margin: 12px auto;
 }
 
-/* ✅ 核心修复代码 */
 /* 使用 /deep/ 或 ::v-deep 是为了让样式穿透 scoped 的限制，影响到 v-html 生成的图片 */
 .content-box /deep/ img {
   max-width: 100% !important; /* 关键：限制图片最大宽度为父容器宽度 */
